@@ -1,6 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
 
 import App from './App';
 import { UserProvider } from './contexts/user.context';
@@ -11,17 +13,26 @@ import './index.scss';
 
 const rootElement = document.getElementById('root');
 
+const client = new ApolloClient({
+  link: new HttpLink({
+    uri: 'https://crwn-clothing.com',
+  }),
+  cache: new InMemoryCache(),
+});
+
 render(
   <React.StrictMode>
-    <BrowserRouter>
-      <UserProvider>
-        <CategoriesProvider>
-          <CartProvider>
-            <App />
-          </CartProvider>
-        </CategoriesProvider>
-      </UserProvider>
-    </BrowserRouter>
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <UserProvider>
+          <CategoriesProvider>
+            <CartProvider>
+              <App />
+            </CartProvider>
+          </CategoriesProvider>
+        </UserProvider>
+      </BrowserRouter>
+    </ApolloProvider>
   </React.StrictMode>,
   rootElement
 );
